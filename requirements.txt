@@ -1,6 +1,7 @@
-clearml
-keras
-matplotlib
-pandas
-scikit-learn
-seaborn
+boto3==1.28.47
+clearml==1.12.2
+matplotlib==3.7.2
+pandas==2.0.3
+pydantic==2.3.0
+scikit-learn==1.3.0
+seaborn==0.12.2

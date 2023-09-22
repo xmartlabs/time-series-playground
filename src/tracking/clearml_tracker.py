@@ -6,7 +6,7 @@ class ClearMLTracker(Tracker):
 
     def __init__(self, project_name=None, experiment_name=None):
         self.task = Task.current_task() or Task.init(project_name=project_name, task_name=experiment_name,
-                                                     #  auto_connect_frameworks={'tensorflow': False, 'tensorboard': True}
+                                                     auto_connect_frameworks={'tensorboard': True, 'matplotlib': True}
                                                      )
         self.logger = Logger.current_logger()
         self._callback = None
@@ -32,7 +32,10 @@ class ClearMLTracker(Tracker):
             self.logger.report_scalar(metric, series, iteration=iteration, value=value)
 
     def log_chart(self, title, series, iteration, figure):
-        self.logger.report_plotly(title=title, series=series, iteration=iteration, figure=figure)
+        self.task.logger.report_matplotlib_figure(title=title, series=series, iteration=iteration, figure=figure)
+
+    def add_tags(self, tags):
+        self.task.add_tags(tags)
 
     def finish_run(self):
         self.task.mark_completed()

@@ -1,21 +1,26 @@
+import os
+import tempfile
+
 import tensorflow as tf
+from tensorflow.keras.callbacks import EarlyStopping, TensorBoard
 
 
-class TimeSeriesModel:
+class TimeSeriesModel(tf.keras.Model):
 
     model = None
 
-    def __init__(self, tracker):
-        self.tracker = tracker
+    def __init__(self):
+        super().__init__(self)
 
-    # hidden1_size=512, hidden2_size=128, l2_param=0.002, dropout_factor=0.2, bias_regularizer='l1'
     def build_model(self, **kwargs):
         raise NotImplementedError()
 
-    def compile_and_fit(self, window, patience=2, epochs=20):
-        early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss',
-                                                          patience=patience,
-                                                          mode='min')
+    def compile_and_fit(self, window, patience=2, epochs=2):
+        early_stopping = EarlyStopping(monitor='val_loss',
+                                       patience=patience,
+                                       mode='min')
+        log_dir = os.path.join(tempfile.gettempdir(), 'tensorboard')
+        tboard = TensorBoard(log_dir=log_dir, write_images=False, write_graph=False)
 
         self.model.compile(loss=tf.keras.losses.MeanSquaredError(),
                            optimizer=tf.keras.optimizers.Adam(),
@@ -23,7 +28,7 @@ class TimeSeriesModel:
 
         history = self.model.fit(window.train, epochs=epochs,
                                  validation_data=window.val,
-                                 callbacks=[early_stopping])
+                                 callbacks=[early_stopping, tboard])
         return history
 
     def predict(self, batch_generator):
