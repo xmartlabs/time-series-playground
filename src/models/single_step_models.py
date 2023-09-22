@@ -1,5 +1,5 @@
 import tensorflow as tf
-from src.models.time_series_model import TimeSeriesModel
+from models.time_series_model import TimeSeriesModel
 
 
 class Baseline(tf.keras.Model):
@@ -64,4 +64,3 @@ class RNNModel(TimeSeriesModel):
             # Shape => [batch, time, features]
             tf.keras.layers.Dense(units=1)
         ])
-

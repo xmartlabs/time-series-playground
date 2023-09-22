@@ -54,11 +54,12 @@ class WindowGenerator():
 
         return inputs, labels
 
-    def plot(self, model=None, plot_col='T (degC)', max_subplots=3):
+    def plot(self, tracker, model=None, plot_col='T (degC)', max_subplots=3):
         inputs, labels = self.example
         plt.figure(figsize=(12, 8))
         plot_col_index = self.column_indices[plot_col]
         max_n = min(max_subplots, len(inputs))
+        tracker.log_chart(title='Model Predictions', series='predictions', iteration=1, figure=plt)
         for n in range(max_n):
             plt.subplot(max_n, 1, n + 1)
             plt.ylabel(f'{plot_col} [normed]')
@@ -83,6 +84,7 @@ class WindowGenerator():
 
             if n == 0:
                 plt.legend()
+            plt.show()
 
         plt.xlabel('Time [h]')
 
