@@ -1,7 +1,8 @@
 train:
-  input_width: 26
+  input_width: 28
   label_width: 24
   shift: 1
   epochs: 20
 model:
   nn_model_type: 'convolutional'
+  conv_width: 5

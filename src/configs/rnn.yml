@@ -5,3 +5,4 @@ train:
   epochs: 20
 model:
   nn_model_type: 'rnn'
+  lstm_units: 32
