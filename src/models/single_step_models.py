@@ -58,9 +58,10 @@ class ConvModel(TimeSeriesModel):
 
 class RNNModel(TimeSeriesModel):
     def build_model(self, **kwargs):
+        lstm_units = kwargs.get('lstm_units')
         self.model = tf.keras.models.Sequential([
             # Shape [batch, time, features] => [batch, time, lstm_units]
-            tf.keras.layers.LSTM(32, return_sequences=True),
+            tf.keras.layers.LSTM(lstm_units, return_sequences=True),
             # Shape => [batch, time, features]
             tf.keras.layers.Dense(units=1)
         ])

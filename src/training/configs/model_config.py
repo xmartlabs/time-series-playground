@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel
+from pydantic import BaseModel, create_model
 
 from models import Baseline, LinearModel, DenseModel, MultiStepDense, ConvModel, RNNModel
 
@@ -31,3 +31,13 @@ class ModelType(str, Enum):
 
 class ModelConfig(BaseModel):
     nn_model_type: ModelType
+
+    # Return a dict with all parameters for the model apart from model type
+    def model_params(self):
+        return self.dict(exclude={'nn_model_type'})
+
+    @classmethod
+    def from_config(cls, config):
+        model_fields = {k: (type(v), v) for k, v in config['model'].items() if k != 'nn_model_type'}
+        ThisModelConfig = create_model('ThisModelConfig', **model_fields, __base__=ModelConfig)
+        return ThisModelConfig(**config['model'])

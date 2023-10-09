@@ -28,7 +28,7 @@ def main(train_config: TrainConfig, model_config: ModelConfig, tracker: ClearMLT
                       metrics=[tf.keras.metrics.MeanAbsoluteError()])
     else:
         model = model_config.nn_model_type.model()
-        model.build_model()
+        model.build_model(**model_config.model_params())
         history = model.compile_and_fit(window, epochs=train_config.epochs)
         print(history)
 
@@ -53,6 +53,6 @@ if __name__ == '__main__':
     config = load_config(args.config)
     tracker.track_config(config)
     train_config = TrainConfig(**config['train'])
-    model_config = ModelConfig(**config['model'])
+    model_config = ModelConfig.from_config(config)
     main(train_config, model_config, tracker)
     tracker.finish_run()
