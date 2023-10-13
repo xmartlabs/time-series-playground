@@ -68,10 +68,12 @@ class JenaPreprocessor():
         process_time(df)
         # ### Split the data
 
-        # You'll use a `(70%, 20%, 10%)` split for the training, validation, and test sets. Note the data is **not** being randomly shuffled before splitting. This is for two reasons:
+        # You'll use a `(70%, 20%, 10%)` split for the training, validation, and test sets. Note the data is **not** being
+        # randomly shuffled before splitting. This is for two reasons:
         #
         # 1. It ensures that chopping the data into windows of consecutive samples is still possible.
-        # 2. It ensures that the validation/test results are more realistic, being evaluated on the data collected after the model was trained.
+        # 2. It ensures that the validation/test results are more realistic, being evaluated on the data collected after the
+        # model was trained.
 
         # + id="ia-MPAHxbInX"
 
@@ -79,7 +81,6 @@ class JenaPreprocessor():
         train_df = df[0:int(n * 0.7)]
         val_df = df[int(n * 0.7):int(n * 0.9)]
         test_df = df[int(n * 0.9):]
-
 
         # ### Normalize the data
         #
@@ -89,8 +90,9 @@ class JenaPreprocessor():
         # The mean and standard deviation should only be computed using the training data so that the models have no access to the
         # values in the validation and test sets.
         #
-        # It's also arguable that the model shouldn't have access to future values in the training set when training, and that this
-        # normalization should be done using moving averages. That's not the focus of this tutorial, and the validation and test sets
+        # It's also arguable that the model shouldn't have access to future values in the training set when training, and that
+        # this normalization should be done using moving averages.
+        # That's not the focus of this tutorial, and the validation and test sets
         # ensure that you get (somewhat) honest metrics. So, in the interest of simplicity this tutorial uses a simple average.
 
         train_mean = train_df.mean()

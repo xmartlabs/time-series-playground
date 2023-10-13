@@ -110,7 +110,7 @@ class WindowGenerator():
         if self.include_context:
             ds = ds.map(lambda x, y: ({'time_series': x[:, :, 0:1], 'weekday': tf.cast(x[:, -1, 1], tf.uint8),
                                        'month': tf.cast(x[:, -1, 2], tf.uint8), 'year': x[:, -1, 3]},
-                                       y))
+                                      y))
         return ds
 
     @property
