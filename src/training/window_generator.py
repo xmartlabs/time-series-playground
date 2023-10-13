@@ -6,11 +6,13 @@ import matplotlib.pyplot as plt
 class WindowGenerator():
     def __init__(self, input_width, label_width, shift,
                  train_df, val_df, test_df,
-                 label_columns=None):
+                 label_columns=None, include_context=False, sequence_stride=96):
         # Store the raw data.
         self.train_df = train_df
         self.val_df = val_df
         self.test_df = test_df
+        self.include_context = include_context
+        self.sequence_stride = sequence_stride
 
         # Work out the label column indices.
         self.label_columns = label_columns
@@ -56,14 +58,19 @@ class WindowGenerator():
 
     def plot(self, tracker, model=None, plot_col='T (degC)', max_subplots=3):
         inputs, labels = self.example
+        if self.include_context:
+            chart_inputs = inputs['time_series']
+        else:
+            chart_inputs = inputs
         plt.figure(figsize=(12, 8))
         plot_col_index = self.column_indices[plot_col]
         max_n = min(max_subplots, len(inputs))
-        tracker.log_chart(title='Model Predictions', series='predictions', iteration=1, figure=plt)
+        if tracker is not None:
+            tracker.log_chart(title='Model Predictions', series='predictions', iteration=1, figure=plt)
         for n in range(max_n):
             plt.subplot(max_n, 1, n + 1)
             plt.ylabel(f'{plot_col} [normed]')
-            plt.plot(self.input_indices, inputs[n, :, plot_col_index],
+            plt.plot(self.input_indices, chart_inputs[n, :, plot_col_index],
                      label='Inputs', marker='.', zorder=-10)
 
             if self.label_columns:
@@ -94,12 +101,16 @@ class WindowGenerator():
             data=data,
             targets=None,
             sequence_length=self.total_window_size,
-            sequence_stride=1,
+            sequence_stride=self.sequence_stride,
             shuffle=True,
             batch_size=32,)
 
         ds = ds.map(self.split_window)
 
+        if self.include_context:
+            ds = ds.map(lambda x, y: ({'time_series': x[:, :, 0:1], 'weekday': tf.cast(x[:, -1, 1], tf.uint8),
+                                       'month': tf.cast(x[:, -1, 2], tf.uint8), 'year': x[:, -1, 3]},
+                                      y))
         return ds
 
     @property

@@ -3,6 +3,7 @@ train:
   label_width: 24
   shift: 1
   epochs: 20
+  learning_rate: 0.001
 model:
   nn_model_type: 'rnn'
   lstm_units: 32

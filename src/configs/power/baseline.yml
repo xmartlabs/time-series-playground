@@ -1,0 +1,7 @@
+train:
+  input_width: 96
+  label_width: 96
+  shift: 96
+  epochs: 1
+model:
+  nn_model_type: 'baseline'
